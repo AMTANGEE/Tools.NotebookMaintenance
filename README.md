@@ -12,7 +12,7 @@ This tool will remove downloaded attachments and/or documents fetched by the AMT
 ## Feedback 
 
 * Send us an email at support@amtangee.com
-* File an issue here in [GitHub](https://github.com/AMTANGEE/tool.notebookmaintenance/issues)
+* File an issue here in [GitHub](https://github.com/AMTANGEE/tools.notebookmaintenance/issues)
 
 ## License
 
