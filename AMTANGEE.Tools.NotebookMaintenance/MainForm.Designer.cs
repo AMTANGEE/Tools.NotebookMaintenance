@@ -40,6 +40,9 @@
             this.edtSQLServer = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.label10 = new System.Windows.Forms.Label();
+            this.btnAttachmentsFiletypes = new System.Windows.Forms.Button();
+            this.chkAttachmentsFiletypes = new System.Windows.Forms.CheckBox();
             this.label2 = new System.Windows.Forms.Label();
             this.edtSizeAttachments = new System.Windows.Forms.TextBox();
             this.chkAttachmentsSize = new System.Windows.Forms.CheckBox();
@@ -58,6 +61,9 @@
             this.progressBar1 = new System.Windows.Forms.ProgressBar();
             this.label13 = new System.Windows.Forms.Label();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.label11 = new System.Windows.Forms.Label();
+            this.btnDocumentsFiletypes = new System.Windows.Forms.Button();
+            this.chkDocumentsFiletypes = new System.Windows.Forms.CheckBox();
             this.label14 = new System.Windows.Forms.Label();
             this.edtSizeDocuments = new System.Windows.Forms.TextBox();
             this.chkDocumentsSize = new System.Windows.Forms.CheckBox();
@@ -179,6 +185,9 @@
             // 
             // groupBox2
             // 
+            this.groupBox2.Controls.Add(this.label10);
+            this.groupBox2.Controls.Add(this.btnAttachmentsFiletypes);
+            this.groupBox2.Controls.Add(this.chkAttachmentsFiletypes);
             this.groupBox2.Controls.Add(this.label2);
             this.groupBox2.Controls.Add(this.edtSizeAttachments);
             this.groupBox2.Controls.Add(this.chkAttachmentsSize);
@@ -188,15 +197,46 @@
             this.groupBox2.Enabled = false;
             this.groupBox2.Location = new System.Drawing.Point(13, 150);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(417, 100);
+            this.groupBox2.Size = new System.Drawing.Size(417, 93);
             this.groupBox2.TabIndex = 1;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Dateianhänge";
             // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Location = new System.Drawing.Point(322, 68);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(70, 13);
+            this.label10.TabIndex = 9;
+            this.label10.Text = "zurücksetzen";
+            // 
+            // btnAttachmentsFiletypes
+            // 
+            this.btnAttachmentsFiletypes.Enabled = false;
+            this.btnAttachmentsFiletypes.Location = new System.Drawing.Point(222, 65);
+            this.btnAttachmentsFiletypes.Name = "btnAttachmentsFiletypes";
+            this.btnAttachmentsFiletypes.Size = new System.Drawing.Size(94, 23);
+            this.btnAttachmentsFiletypes.TabIndex = 8;
+            this.btnAttachmentsFiletypes.Text = "Dateitypen";
+            this.btnAttachmentsFiletypes.UseVisualStyleBackColor = true;
+            this.btnAttachmentsFiletypes.Click += new System.EventHandler(this.btnAttachmentsFiletypes_Click);
+            // 
+            // chkAttachmentsFiletypes
+            // 
+            this.chkAttachmentsFiletypes.AutoSize = true;
+            this.chkAttachmentsFiletypes.Location = new System.Drawing.Point(6, 68);
+            this.chkAttachmentsFiletypes.Name = "chkAttachmentsFiletypes";
+            this.chkAttachmentsFiletypes.Size = new System.Drawing.Size(219, 17);
+            this.chkAttachmentsFiletypes.TabIndex = 6;
+            this.chkAttachmentsFiletypes.Text = "Dateianhänge mit bestimmten Dateitypen";
+            this.chkAttachmentsFiletypes.UseVisualStyleBackColor = true;
+            this.chkAttachmentsFiletypes.CheckedChanged += new System.EventHandler(this.checkBoxes_CheckedChanged);
+            // 
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(223, 59);
+            this.label2.Location = new System.Drawing.Point(322, 45);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(87, 13);
             this.label2.TabIndex = 5;
@@ -205,9 +245,9 @@
             // edtSizeAttachments
             // 
             this.edtSizeAttachments.Enabled = false;
-            this.edtSizeAttachments.Location = new System.Drawing.Point(147, 56);
+            this.edtSizeAttachments.Location = new System.Drawing.Point(222, 42);
             this.edtSizeAttachments.Name = "edtSizeAttachments";
-            this.edtSizeAttachments.Size = new System.Drawing.Size(70, 20);
+            this.edtSizeAttachments.Size = new System.Drawing.Size(94, 20);
             this.edtSizeAttachments.TabIndex = 4;
             this.edtSizeAttachments.Text = "1024";
             this.edtSizeAttachments.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
@@ -217,7 +257,7 @@
             // chkAttachmentsSize
             // 
             this.chkAttachmentsSize.AutoSize = true;
-            this.chkAttachmentsSize.Location = new System.Drawing.Point(6, 58);
+            this.chkAttachmentsSize.Location = new System.Drawing.Point(6, 45);
             this.chkAttachmentsSize.Name = "chkAttachmentsSize";
             this.chkAttachmentsSize.Size = new System.Drawing.Size(145, 17);
             this.chkAttachmentsSize.TabIndex = 3;
@@ -228,7 +268,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(298, 20);
+            this.label1.Location = new System.Drawing.Point(322, 20);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(70, 13);
             this.label1.TabIndex = 2;
@@ -238,7 +278,7 @@
             // 
             this.dtpDateAttachments.Enabled = false;
             this.dtpDateAttachments.Format = System.Windows.Forms.DateTimePickerFormat.Short;
-            this.dtpDateAttachments.Location = new System.Drawing.Point(198, 17);
+            this.dtpDateAttachments.Location = new System.Drawing.Point(222, 16);
             this.dtpDateAttachments.Name = "dtpDateAttachments";
             this.dtpDateAttachments.Size = new System.Drawing.Size(94, 20);
             this.dtpDateAttachments.TabIndex = 1;
@@ -285,7 +325,7 @@
             this.groupBox3.Controls.Add(this.label9);
             this.groupBox3.Controls.Add(this.label8);
             this.groupBox3.Controls.Add(this.label5);
-            this.groupBox3.Location = new System.Drawing.Point(13, 362);
+            this.groupBox3.Location = new System.Drawing.Point(13, 375);
             this.groupBox3.Name = "groupBox3";
             this.groupBox3.Size = new System.Drawing.Size(417, 100);
             this.groupBox3.TabIndex = 4;
@@ -363,6 +403,9 @@
             // 
             // groupBox4
             // 
+            this.groupBox4.Controls.Add(this.label11);
+            this.groupBox4.Controls.Add(this.btnDocumentsFiletypes);
+            this.groupBox4.Controls.Add(this.chkDocumentsFiletypes);
             this.groupBox4.Controls.Add(this.label14);
             this.groupBox4.Controls.Add(this.edtSizeDocuments);
             this.groupBox4.Controls.Add(this.chkDocumentsSize);
@@ -370,17 +413,48 @@
             this.groupBox4.Controls.Add(this.dtpDateDocuments);
             this.groupBox4.Controls.Add(this.chkDocumentsDate);
             this.groupBox4.Enabled = false;
-            this.groupBox4.Location = new System.Drawing.Point(13, 256);
+            this.groupBox4.Location = new System.Drawing.Point(13, 249);
             this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Size = new System.Drawing.Size(417, 100);
+            this.groupBox4.Size = new System.Drawing.Size(417, 91);
             this.groupBox4.TabIndex = 7;
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "Dokumente";
             // 
+            // label11
+            // 
+            this.label11.AutoSize = true;
+            this.label11.Location = new System.Drawing.Point(322, 68);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(70, 13);
+            this.label11.TabIndex = 12;
+            this.label11.Text = "zurücksetzen";
+            // 
+            // btnDocumentsFiletypes
+            // 
+            this.btnDocumentsFiletypes.Enabled = false;
+            this.btnDocumentsFiletypes.Location = new System.Drawing.Point(222, 64);
+            this.btnDocumentsFiletypes.Name = "btnDocumentsFiletypes";
+            this.btnDocumentsFiletypes.Size = new System.Drawing.Size(94, 23);
+            this.btnDocumentsFiletypes.TabIndex = 11;
+            this.btnDocumentsFiletypes.Text = "Dateitypen";
+            this.btnDocumentsFiletypes.UseVisualStyleBackColor = true;
+            this.btnDocumentsFiletypes.Click += new System.EventHandler(this.btnDocumentsFiletypes_Click);
+            // 
+            // chkDocumentsFiletypes
+            // 
+            this.chkDocumentsFiletypes.AutoSize = true;
+            this.chkDocumentsFiletypes.Location = new System.Drawing.Point(6, 67);
+            this.chkDocumentsFiletypes.Name = "chkDocumentsFiletypes";
+            this.chkDocumentsFiletypes.Size = new System.Drawing.Size(207, 17);
+            this.chkDocumentsFiletypes.TabIndex = 10;
+            this.chkDocumentsFiletypes.Text = "Dokumente mit bestimmten Dateitypen";
+            this.chkDocumentsFiletypes.UseVisualStyleBackColor = true;
+            this.chkDocumentsFiletypes.CheckedChanged += new System.EventHandler(this.checkBoxes_CheckedChanged);
+            // 
             // label14
             // 
             this.label14.AutoSize = true;
-            this.label14.Location = new System.Drawing.Point(223, 59);
+            this.label14.Location = new System.Drawing.Point(322, 45);
             this.label14.Name = "label14";
             this.label14.Size = new System.Drawing.Size(87, 13);
             this.label14.TabIndex = 5;
@@ -389,9 +463,9 @@
             // edtSizeDocuments
             // 
             this.edtSizeDocuments.Enabled = false;
-            this.edtSizeDocuments.Location = new System.Drawing.Point(147, 56);
+            this.edtSizeDocuments.Location = new System.Drawing.Point(222, 42);
             this.edtSizeDocuments.Name = "edtSizeDocuments";
-            this.edtSizeDocuments.Size = new System.Drawing.Size(70, 20);
+            this.edtSizeDocuments.Size = new System.Drawing.Size(94, 20);
             this.edtSizeDocuments.TabIndex = 4;
             this.edtSizeDocuments.Text = "1024";
             this.edtSizeDocuments.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
@@ -399,7 +473,7 @@
             // chkDocumentsSize
             // 
             this.chkDocumentsSize.AutoSize = true;
-            this.chkDocumentsSize.Location = new System.Drawing.Point(6, 58);
+            this.chkDocumentsSize.Location = new System.Drawing.Point(6, 44);
             this.chkDocumentsSize.Name = "chkDocumentsSize";
             this.chkDocumentsSize.Size = new System.Drawing.Size(133, 17);
             this.chkDocumentsSize.TabIndex = 3;
@@ -410,7 +484,7 @@
             // label15
             // 
             this.label15.AutoSize = true;
-            this.label15.Location = new System.Drawing.Point(298, 20);
+            this.label15.Location = new System.Drawing.Point(322, 20);
             this.label15.Name = "label15";
             this.label15.Size = new System.Drawing.Size(70, 13);
             this.label15.TabIndex = 2;
@@ -420,7 +494,7 @@
             // 
             this.dtpDateDocuments.Enabled = false;
             this.dtpDateDocuments.Format = System.Windows.Forms.DateTimePickerFormat.Short;
-            this.dtpDateDocuments.Location = new System.Drawing.Point(198, 17);
+            this.dtpDateDocuments.Location = new System.Drawing.Point(222, 16);
             this.dtpDateDocuments.Name = "dtpDateDocuments";
             this.dtpDateDocuments.Size = new System.Drawing.Size(94, 20);
             this.dtpDateDocuments.TabIndex = 1;
@@ -452,8 +526,8 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
             this.Name = "MainForm";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "AMTANGEE® Replikation Wartung";
-            this.Load += new System.EventHandler(this.Form1_Load);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.groupBox2.ResumeLayout(false);
@@ -503,6 +577,12 @@
         private System.Windows.Forms.Label label15;
         private System.Windows.Forms.DateTimePicker dtpDateDocuments;
         private System.Windows.Forms.CheckBox chkDocumentsDate;
+        private System.Windows.Forms.Label label10;
+        private System.Windows.Forms.Button btnAttachmentsFiletypes;
+        private System.Windows.Forms.CheckBox chkAttachmentsFiletypes;
+        private System.Windows.Forms.Label label11;
+        private System.Windows.Forms.Button btnDocumentsFiletypes;
+        private System.Windows.Forms.CheckBox chkDocumentsFiletypes;
     }
 }
 

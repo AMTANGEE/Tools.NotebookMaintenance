@@ -16,11 +16,33 @@ namespace AMTANGEE.Tools.NotebookMaintenance
         }
         private void checkBoxes_CheckedChanged(object sender, EventArgs e)
         {
+            if (sender as CheckBox == chkAttachmentsFiletypes)
+            {
+                if (chkAttachmentsFiletypes.Checked)
+                {
+                    btnAttachmentsFiletypes.Enabled = true;
+                    btnAttachmentsFiletypes.PerformClick();
+                }
+                else
+                    btnAttachmentsFiletypes.Enabled = false;
+            }
+            if (sender as CheckBox == chkDocumentsFiletypes)
+            {
+                if (chkDocumentsFiletypes.Checked)
+                {
+                    btnDocumentsFiletypes.Enabled = true;
+                    btnDocumentsFiletypes.PerformClick();
+                }
+                else
+                    btnDocumentsFiletypes.Enabled = false;
+            }
             dtpDateAttachments.Enabled = chkAttachmentsDate.Checked;
             edtSizeAttachments.Enabled = chkAttachmentsSize.Checked;
+            btnAttachmentsFiletypes.Enabled = chkAttachmentsFiletypes.Checked;
             dtpDateDocuments.Enabled = chkDocumentsDate.Checked;
             edtSizeDocuments.Enabled = chkDocumentsSize.Checked;
-            btnDoUpdate.Enabled = (chkAttachmentsDate.Checked || chkAttachmentsSize.Checked || chkDocumentsDate.Checked || chkDocumentsSize.Checked);
+            btnDocumentsFiletypes.Enabled = chkDocumentsFiletypes.Checked;
+            btnDoUpdate.Enabled = (chkAttachmentsDate.Checked || chkAttachmentsSize.Checked || chkAttachmentsFiletypes.Checked || chkDocumentsDate.Checked || chkDocumentsSize.Checked ||chkDocumentsFiletypes.Checked);
             btnPreviewSize.Enabled = btnDoUpdate.Enabled;
             lbEstimatedDBSize.Text = "\"Vorschau\" klicken";
             lbSavingDBSize.Text = "\"Vorschau\" klicken";
@@ -124,20 +146,33 @@ namespace AMTANGEE.Tools.NotebookMaintenance
             double len = 0;
             double len2 = 0;
             string temp = "";
-            if (chkAttachmentsDate.Checked || chkAttachmentsSize.Checked)
+            if (chkAttachmentsDate.Checked || chkAttachmentsSize.Checked || chkAttachmentsFiletypes.Checked)
             {
-                sql += "select isnull(sum(convert(bigint,isnull([size],0))),0) from MessagesAttachments (nolock) where Location <> dbo.OwnLocation() and [ATTACHMENT] is not null and ";
+                sql += "select isnull(sum(convert(bigint,isnull([size],0))),0) from MessagesAttachments (nolock) where Location <> dbo.OwnLocation() and [ATTACHMENT] is not null  and len(isnull(contentid,'')) = 0";
 
                 if (chkAttachmentsSize.Checked)
-                    sql += "Isnull([Size],0) > " + Convert.ToInt32(edtSizeAttachments.Text) * 1024 + " ";
-
-                if (chkAttachmentsDate.Checked && chkAttachmentsSize.Checked)
-                    sql += "and  ";
+                    sql += "and Isnull([Size],0) > " + Convert.ToInt32(edtSizeAttachments.Text) * 1024 + " ";
 
                 if (chkAttachmentsDate.Checked)
-                    sql += "[Message] in (Select GUID from Messages (nolock) where Location <> dbo.OwnLocation() and [Datetime] < Convert(Datetime,'" + dtpDateAttachments.Value.Date.Day.ToString().PadLeft(2, '0') + "." + dtpDateAttachments.Value.Date.Month.ToString().PadLeft(2, '0') + "." + dtpDateAttachments.Value.Date.Year.ToString() + " 00:00:00',104)) ";
+                    sql += " and [Message] in (Select GUID from Messages (nolock) where Location <> dbo.OwnLocation() and [Datetime] < Convert(Datetime,'" + dtpDateAttachments.Value.Date.Day.ToString().PadLeft(2, '0') + "." + dtpDateAttachments.Value.Date.Month.ToString().PadLeft(2, '0') + "." + dtpDateAttachments.Value.Date.Year.ToString() + " 00:00:00',104)) ";
 
-                sql += " and len(isnull(contentid,'')) = 0 ";
+                if (chkAttachmentsFiletypes.Checked)
+                {
+                    string where = "";
+                    foreach (string value in AttachmentsFiletypes)
+                    {
+                        if (where.Length == 0)
+                            where = "Upper(FILENAME) like '%." + value + "'";
+                        else
+                            where += "OR Upper(FILENAME) like '%." + value + "'";
+                    }
+                    if (AttachmentsFiletypes.Count == 1)
+                        where = " and " + where;
+                    else
+                        where = " and (" + where + ")";
+                    sql += where;
+                }
+
                 temp = mssql.SQLExecuteScalar(sql, con);
                 temp = temp.Replace(",", ".");
                
@@ -146,27 +181,39 @@ namespace AMTANGEE.Tools.NotebookMaintenance
                     len = Convert.ToDouble(temp);
                     len2 = len;
                 }
-                catch (Exception exc)
+                catch
                 {
                     MessageBox.Show("Fehler bei Konvertieren (1): " + temp);
                 }
             }
 
-            if (chkDocumentsSize.Checked || chkDocumentsDate.Checked)
+            if (chkDocumentsSize.Checked || chkDocumentsDate.Checked || chkDocumentsFiletypes.Checked)
             {
                 sql = "";
-                sql += "select isnull(sum(convert(bigint,isnull([size],0))),0) from Documents (nolock) where Location <> dbo.OwnLocation() and [DOCUMENT] is not null and ";
+                sql += "select isnull(sum(convert(bigint,isnull([size],0))),0) from Documents (nolock) where Location <> dbo.OwnLocation() and [DOCUMENT] is not null";
 
                 if (chkDocumentsSize.Checked)
-                    sql += "Isnull([Size],0) > " + Convert.ToInt32(edtSizeDocuments.Text) * 1024 + " ";
-
-                if (chkDocumentsDate.Checked && chkDocumentsSize.Checked)
-                    sql += "and  ";
+                    sql += "and Isnull([Size],0) > " + Convert.ToInt32(edtSizeDocuments.Text) * 1024 + " ";
 
                 if (chkDocumentsDate.Checked)
-                    sql += "  [Datetime] < Convert(Datetime,'" + dtpDateDocuments.Value.Date.Day.ToString().PadLeft(2, '0') + "." + dtpDateDocuments.Value.Date.Month.ToString().PadLeft(2, '0') + "." + dtpDateDocuments.Value.Date.Year.ToString() + " 00:00:00',104) ";
+                    sql += "and [Datetime] < Convert(Datetime,'" + dtpDateDocuments.Value.Date.Day.ToString().PadLeft(2, '0') + "." + dtpDateDocuments.Value.Date.Month.ToString().PadLeft(2, '0') + "." + dtpDateDocuments.Value.Date.Year.ToString() + " 00:00:00',104) ";
 
-
+                if (chkDocumentsFiletypes.Checked)
+                {
+                    string where = "";
+                    foreach (string value in DocumentFiletypes)
+                    {
+                        if (where.Length == 0)
+                            where = "Upper(Filetype) = '" + value + "'";
+                        else
+                            where += "OR Upper(Filetype) = '" + value + "'";
+                    }
+                    if (DocumentFiletypes.Count == 1)
+                        where = " and " + where;
+                    else
+                        where = " and (" + where + ")";
+                    sql += where;
+                }
                 temp = mssql.SQLExecuteScalar(sql, con);
                 temp = temp.Replace(",", ".");
 
@@ -176,7 +223,7 @@ namespace AMTANGEE.Tools.NotebookMaintenance
                     len += len3;
                     len2 = len;
                 }
-                catch (Exception exc)
+                catch
                 {
                     MessageBox.Show("Fehler bei Konvertieren (2): " + temp);
                 }
@@ -270,19 +317,33 @@ namespace AMTANGEE.Tools.NotebookMaintenance
             bool resetDocuments = false;
             string sql = "";
 
-            if (chkAttachmentsDate.Checked || chkAttachmentsSize.Checked)
+            if (chkAttachmentsDate.Checked || chkAttachmentsSize.Checked || chkAttachmentsFiletypes.Checked)
             {
-                sql += "Select GUID from MessagesAttachments (nolock)  where ";
+                sql += "Select GUID from MessagesAttachments (nolock) where Location <> dbo.OwnLocation() and [ATTACHMENT] is not null  and len(isnull(contentid,'')) = 0";
 
                 if (chkAttachmentsSize.Checked)
-                    sql += "Isnull([Size],0) > " + Convert.ToInt32(edtSizeAttachments.Text) * 1024 + " ";
+                    sql += " and Isnull([Size],0) > " + Convert.ToInt32(edtSizeAttachments.Text) * 1024 + " ";
 
-                if (chkAttachmentsDate.Checked && chkAttachmentsSize.Checked)
-                    sql += "and  ";
 
                 if (chkAttachmentsDate.Checked)
-                    sql += "[Message] in (Select GUID from Messages (nolock) where [Datetime] < Convert(Datetime,'" + dtpDateAttachments.Value.Date.Day.ToString().PadLeft(2, '0') + "." + dtpDateAttachments.Value.Date.Month.ToString().PadLeft(2, '0') + "." + dtpDateAttachments.Value.Date.Year.ToString() + " 00:00:00',104)) ";
-                sql += " and len(isnull(contentid,'')) = 0 and  ([ATTACHMENT]) is not null";
+                    sql += " and  [Message] in (Select GUID from Messages (nolock) where [Datetime] < Convert(Datetime,'" + dtpDateAttachments.Value.Date.Day.ToString().PadLeft(2, '0') + "." + dtpDateAttachments.Value.Date.Month.ToString().PadLeft(2, '0') + "." + dtpDateAttachments.Value.Date.Year.ToString() + " 00:00:00',104)) ";
+
+                if (chkAttachmentsFiletypes.Checked)
+                {
+                    string where = "";
+                    foreach (string value in AttachmentsFiletypes)
+                    {
+                        if (where.Length == 0)
+                            where = "Upper(FILENAME) like '%." + value + "'";
+                        else
+                            where += "OR Upper(FILENAME) like '%." + value + "'";
+                    }
+                    if (AttachmentsFiletypes.Count == 1)
+                        where = " and " + where;
+                    else
+                        where = " and (" + where + ")";
+                    sql += where;
+                }
 
                 DataSet ds = mssql.SQLSelect(sql, con);
 
@@ -309,19 +370,32 @@ namespace AMTANGEE.Tools.NotebookMaintenance
             label13.Text = "";
             
             Application.DoEvents();
-            if (chkDocumentsDate.Checked || chkDocumentsSize.Checked)
+            if (chkDocumentsDate.Checked || chkDocumentsSize.Checked || chkDocumentsFiletypes.Checked)
             {
-                sql += "Select GUID from Documents (nolock)  where ";
+                sql += "Select GUID from Documents (nolock) where Location <> dbo.OwnLocation() and [DOCUMENT] is not null";
 
                 if (chkDocumentsSize.Checked)
-                    sql += "Isnull([Size],0) > " + Convert.ToInt32(edtSizeAttachments.Text) * 1024 + " ";
-
-                if (chkDocumentsDate.Checked && chkDocumentsSize.Checked)
-                    sql += "and  ";
+                    sql += " and Isnull([Size],0) > " + Convert.ToInt32(edtSizeAttachments.Text) * 1024 + " ";
 
                 if (chkDocumentsDate.Checked)
-                    sql += " [Datetime] < Convert(Datetime,'" + dtpDateDocuments.Value.Date.Day.ToString().PadLeft(2, '0') + "." + dtpDateDocuments.Value.Date.Month.ToString().PadLeft(2, '0') + "." + dtpDateDocuments.Value.Date.Year.ToString() + " 00:00:00',104) ";
-                sql += " and  ([DOCUMENT]) is not null";
+                    sql += " and  [Datetime] < Convert(Datetime,'" + dtpDateDocuments.Value.Date.Day.ToString().PadLeft(2, '0') + "." + dtpDateDocuments.Value.Date.Month.ToString().PadLeft(2, '0') + "." + dtpDateDocuments.Value.Date.Year.ToString() + " 00:00:00',104) ";
+
+                if (chkDocumentsFiletypes.Checked)
+                {
+                    string where = "";
+                    foreach (string value in DocumentFiletypes)
+                    {
+                        if (where.Length == 0)
+                            where = "Upper(Filetype) = '" + value + "'";
+                        else
+                            where += "OR Upper(Filetype) = '" + value + "'";
+                    }
+                    if (DocumentFiletypes.Count == 1)
+                        where = " and " + where;
+                    else
+                        where = " and (" + where + ")";
+                    sql += where;
+                }
 
                 DataSet ds = mssql.SQLSelect(sql, con);
 
@@ -400,9 +474,98 @@ namespace AMTANGEE.Tools.NotebookMaintenance
             }
         }
 
-        private void Form1_Load(object sender, EventArgs e)
+
+        List<string> AttachmentsFiletypes = new List<string>();
+        List<string> DocumentFiletypes = new List<string>();
+       
+       
+        private void btnAttachmentsFiletypes_Click(object sender, EventArgs e)
         {
-            
+            FiletypesForm NewFiletypesForm = new FiletypesForm();
+            string sql = "select DISTINCT RIGHT(UPPER(FILENAME),PATINDEX('%.%', REVERSE(UPPER(FILENAME)))-1) from MessagesAttachments (nolock) where Location <> dbo.OwnLocation() and [ATTACHMENT] is not null and len(isnull(contentid,'')) = 0";
+            {
+                var withBlock = NewFiletypesForm.clbFiletypes;
+                withBlock.Items.Clear();
+                foreach (DataRow value in mssql.SQLSelect(sql, con).Tables[0].Rows)
+                    withBlock.Items.Add(value.ItemArray[0]);
+                foreach (string value in AttachmentsFiletypes)
+                {
+                    for (var i = 0; i <= withBlock.Items.Count - 1; i++)
+                    {
+                        if (withBlock.Items[i].Equals(value))
+                            withBlock.SetItemChecked(i, true);
+                    }
+                }
+                if (withBlock.Items.Count == 0)
+                {
+                    MessageBox.Show("Es wurden keine Dateiendung in der Datenbank gefunden.Die Option wird jetzt autoamtisch deaktivert.");
+                    btnAttachmentsFiletypes.Enabled = false;
+                    chkAttachmentsFiletypes.Checked = false;
+                }
+                else
+                {
+                    if (AttachmentsFiletypes.Count == 0)
+                    {
+                        for (int i = 0; i <= withBlock.Items.Count - 1; i++)
+                            withBlock.SetItemCheckState(i, CheckState.Checked);
+                    }
+                    if (NewFiletypesForm.ShowDialog(this) == DialogResult.OK)
+                    {
+                        AttachmentsFiletypes.Clear();
+                        foreach (string value in withBlock.CheckedItems)
+                            AttachmentsFiletypes.Add(value);
+                    }
+                    if (AttachmentsFiletypes.Count == 0)
+                    {
+                        btnAttachmentsFiletypes.Enabled = false;
+                        chkAttachmentsFiletypes.Checked = false;
+                    }
+                }
+            }
+        }
+
+        private void btnDocumentsFiletypes_Click(object sender, EventArgs e)
+        {
+            FiletypesForm NewFiletypesForm = new FiletypesForm();
+            string sql = "select DISTINCT(Filetype) from Documents (nolock) where Location <> dbo.OwnLocation() and [DOCUMENT] is not null";
+            {
+                var withBlock = NewFiletypesForm.clbFiletypes;
+                withBlock.Items.Clear();
+                foreach (DataRow value in mssql.SQLSelect(sql, con).Tables[0].Rows)
+                    withBlock.Items.Add(value.ItemArray[0]);
+                foreach (string value in DocumentFiletypes)
+                {
+                    for (var i = 0; i <= withBlock.Items.Count - 1; i++)
+                    {
+                        if (withBlock.Items[i].Equals(value))
+                            withBlock.SetItemChecked(i, true);
+                    }
+                }
+                if (withBlock.Items.Count == 0)
+                {
+                    MessageBox.Show("Es wurden keine Dateiendung in der Datenbank gefunden. Die Option wird jetzt autoamtisch deaktivert.");
+                    btnDocumentsFiletypes.Enabled = false;
+                    chkDocumentsFiletypes.Checked = false;
+                }
+                else
+
+                if (DocumentFiletypes.Count == 0)
+                {
+                    for (int i = 0; i <= withBlock.Items.Count - 1; i++)
+                        withBlock.SetItemCheckState(i, CheckState.Checked);
+                }
+                if (NewFiletypesForm.ShowDialog(this) == DialogResult.OK)
+                {
+                    DocumentFiletypes.Clear();
+                    foreach (string value in withBlock.CheckedItems)
+                        DocumentFiletypes.Add(value);
+                    if (DocumentFiletypes.Count == 0)
+                    {
+                        btnDocumentsFiletypes.Enabled = false;
+                        chkDocumentsFiletypes.Checked = false;
+                    }
+                }
+            }
         }
     }
 }
