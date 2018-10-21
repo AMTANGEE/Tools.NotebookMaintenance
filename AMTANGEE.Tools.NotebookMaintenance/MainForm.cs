@@ -151,7 +151,7 @@ namespace AMTANGEE.Tools.NotebookMaintenance
                 sql += "select isnull(sum(convert(bigint,isnull([size],0))),0) from MessagesAttachments (nolock) where Location <> dbo.OwnLocation() and [ATTACHMENT] is not null  and len(isnull(contentid,'')) = 0";
 
                 if (chkAttachmentsSize.Checked)
-                    sql += "and Isnull([Size],0) > " + Convert.ToInt32(edtSizeAttachments.Text) * 1024 + " ";
+                    sql += " and Isnull([Size],0) > " + Convert.ToInt32(edtSizeAttachments.Text) * 1024 + " ";
 
                 if (chkAttachmentsDate.Checked)
                     sql += " and [Message] in (Select GUID from Messages (nolock) where Location <> dbo.OwnLocation() and [Datetime] < Convert(Datetime,'" + dtpDateAttachments.Value.Date.Day.ToString().PadLeft(2, '0') + "." + dtpDateAttachments.Value.Date.Month.ToString().PadLeft(2, '0') + "." + dtpDateAttachments.Value.Date.Year.ToString() + " 00:00:00',104)) ";
@@ -193,10 +193,10 @@ namespace AMTANGEE.Tools.NotebookMaintenance
                 sql += "select isnull(sum(convert(bigint,isnull([size],0))),0) from Documents (nolock) where Location <> dbo.OwnLocation() and [DOCUMENT] is not null";
 
                 if (chkDocumentsSize.Checked)
-                    sql += "and Isnull([Size],0) > " + Convert.ToInt32(edtSizeDocuments.Text) * 1024 + " ";
+                    sql += " and Isnull([Size],0) > " + Convert.ToInt32(edtSizeDocuments.Text) * 1024 + " ";
 
                 if (chkDocumentsDate.Checked)
-                    sql += "and [Datetime] < Convert(Datetime,'" + dtpDateDocuments.Value.Date.Day.ToString().PadLeft(2, '0') + "." + dtpDateDocuments.Value.Date.Month.ToString().PadLeft(2, '0') + "." + dtpDateDocuments.Value.Date.Year.ToString() + " 00:00:00',104) ";
+                    sql += " and [Datetime] < Convert(Datetime,'" + dtpDateDocuments.Value.Date.Day.ToString().PadLeft(2, '0') + "." + dtpDateDocuments.Value.Date.Month.ToString().PadLeft(2, '0') + "." + dtpDateDocuments.Value.Date.Year.ToString() + " 00:00:00',104) ";
 
                 if (chkDocumentsFiletypes.Checked)
                 {
