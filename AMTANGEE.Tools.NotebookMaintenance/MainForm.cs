@@ -498,7 +498,7 @@ namespace AMTANGEE.Tools.NotebookMaintenance
                 }
                 if (withBlock.Items.Count == 0)
                 {
-                    MessageBox.Show("Es wurden keine Dateiendung in der Datenbank gefunden.Die Option wird jetzt autoamtisch deaktivert.");
+                    MessageBox.Show("Es wurden keine Dateiendungen in der Datenbank gefunden. Die Option wird jetzt automatisch deaktiviert.");
                     btnAttachmentsFiletypes.Enabled = false;
                     chkAttachmentsFiletypes.Checked = false;
                 }
