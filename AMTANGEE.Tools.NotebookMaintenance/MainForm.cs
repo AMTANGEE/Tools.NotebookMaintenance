@@ -419,11 +419,15 @@ namespace AMTANGEE.Tools.NotebookMaintenance
 
 
             progressBar1.Value = 0;
-            label13.Text = "";
-
-
-
+            label13.Text = "Datenbank wird verkleinert...";
             Application.DoEvents();
+
+            mssql.SQLExecute("DBCC SHRINKDATABASE ([" + con.Database + "], 10);", con);
+
+            progressBar1.Value = 0;
+            label13.Text = "";
+            Application.DoEvents();
+
             if(resetAttachments && resetDocuments)
             {
                 MessageBox.Show("Anhänge und Dokumente wurden zurückgesetzt!");
@@ -486,8 +490,12 @@ namespace AMTANGEE.Tools.NotebookMaintenance
             {
                 var withBlock = NewFiletypesForm.clbFiletypes;
                 withBlock.Items.Clear();
-                foreach (DataRow value in mssql.SQLSelect(sql, con).Tables[0].Rows)
-                    withBlock.Items.Add(value.ItemArray[0]);
+                var ds = mssql.SQLSelect(sql, con);
+                if (ds != null && ds.Tables.Count > 0)
+                {
+                    foreach (DataRow value in ds.Tables[0].Rows)
+                        withBlock.Items.Add(value.ItemArray[0]);
+                }
                 foreach (string value in AttachmentsFiletypes)
                 {
                     for (var i = 0; i <= withBlock.Items.Count - 1; i++)
@@ -531,8 +539,13 @@ namespace AMTANGEE.Tools.NotebookMaintenance
             {
                 var withBlock = NewFiletypesForm.clbFiletypes;
                 withBlock.Items.Clear();
-                foreach (DataRow value in mssql.SQLSelect(sql, con).Tables[0].Rows)
-                    withBlock.Items.Add(value.ItemArray[0]);
+                var ds = mssql.SQLSelect(sql, con);
+                if (ds != null && ds.Tables.Count > 0)
+                {
+                    foreach (DataRow value in ds.Tables[0].Rows)
+                        withBlock.Items.Add(value.ItemArray[0]);
+                }
+               
                 foreach (string value in DocumentFiletypes)
                 {
                     for (var i = 0; i <= withBlock.Items.Count - 1; i++)
