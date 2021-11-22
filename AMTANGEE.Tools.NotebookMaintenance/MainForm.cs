@@ -319,7 +319,7 @@ namespace AMTANGEE.Tools.NotebookMaintenance
 
             if (chkAttachmentsDate.Checked || chkAttachmentsSize.Checked || chkAttachmentsFiletypes.Checked)
             {
-                sql += "Select GUID from MessagesAttachments (nolock) where Location <> dbo.OwnLocation() and [ATTACHMENT] is not null  and len(isnull(contentid,'')) = 0";
+                sql = "Select GUID from MessagesAttachments (nolock) where Location <> dbo.OwnLocation() and [ATTACHMENT] is not null  and len(isnull(contentid,'')) = 0";
 
                 if (chkAttachmentsSize.Checked)
                     sql += " and Isnull([Size],0) > " + Convert.ToInt32(edtSizeAttachments.Text) * 1024 + " ";
@@ -372,7 +372,7 @@ namespace AMTANGEE.Tools.NotebookMaintenance
             Application.DoEvents();
             if (chkDocumentsDate.Checked || chkDocumentsSize.Checked || chkDocumentsFiletypes.Checked)
             {
-                sql += "Select GUID from Documents (nolock) where Location <> dbo.OwnLocation() and [DOCUMENT] is not null";
+                sql = "Select GUID from Documents (nolock) where Location <> dbo.OwnLocation() and [DOCUMENT] is not null";
 
                 if (chkDocumentsSize.Checked)
                     sql += " and Isnull([Size],0) > " + Convert.ToInt32(edtSizeAttachments.Text) * 1024 + " ";
